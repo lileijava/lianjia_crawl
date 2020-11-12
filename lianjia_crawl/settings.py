@@ -88,3 +88,21 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# 必选项
+# =================================================================
+# 指定爬虫所使用的Redis数据库（在云服务器116.29.35.201 上）
+REDIS_URL = 'redis://127.0.0.1:6379'
+# 使用scrapy_redis的调度器替代Scrapy 原版调度器
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# 使用scrapy_redis的RFPDupeFilter作为去重过滤器
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# 启用scrapy_redis的RedisPipeline将爬取到的数据汇总到Redis数据库
+ITEM_PIPELINES = {
+'scrapy_redis.pipelines.RedisPipeline': 400,
+}
+#可选项
+# =================================================================
+#爬虫停止后， 保留／ 清理Redis中的请求队列以及去重集合
+# True： 保留， False： 清理， 默认为False
+SCHEDULER_PERSIST = True

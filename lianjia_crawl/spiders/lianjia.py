@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from scrapy_redis.spiders import RedisSpider
 from pyquery import PyQuery as pq
 from lianjia_crawl.items import LianjiaItem
 
 
-class LianjiaSpider(scrapy.Spider):
+class LianjiaSpider(RedisSpider):
     name = 'lianjia'
     allowed_domains = ['lianjia.com']
     start_urls = ['https://lf.lianjia.com/ershoufang/yanjiao/']
@@ -13,9 +14,10 @@ class LianjiaSpider(scrapy.Spider):
     def start_requests(self):
         for i in range(1,10):
             if i == 1:
-                yield scrapy.Request(url=self.start_urls[0])
+                yield RedisSpider.make_requests_from_url(self,self.start_urls[0])
             else:
-                yield scrapy.Request(url=self.page_url.format(i))
+                yield RedisSpider.make_requests_from_url(self,self.page_url.format(i))
+        print("queue init success")
 
     def parse(self, response):
         html = pq(response.text)
