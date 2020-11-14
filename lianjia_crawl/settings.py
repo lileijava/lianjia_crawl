@@ -92,7 +92,12 @@ ITEM_PIPELINES = {
 # 必选项
 # =================================================================
 # 指定爬虫所使用的Redis数据库（在云服务器116.29.35.201 上）
-REDIS_URL = 'redis://127.0.0.1:6379'
+# REDIS_URL = 'redis://127.0.0.1:6379'
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_PARAMS = {
+    'password': '123',
+}
 # 使用scrapy_redis的调度器替代Scrapy 原版调度器
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 # 使用scrapy_redis的RFPDupeFilter作为去重过滤器
