@@ -7,7 +7,7 @@ from lianjia_crawl.items import LianjiaItem
 
 class LianjiaSpider(RedisSpider):
     name = 'lianjia'
-    allowed_domains = ['lianjia.com']
+    # allowed_domains = ['lianjia.com']
     # start_urls = ['https://lf.lianjia.com/ershoufang/yanjiao/']
     page_url = 'https://lf.lianjia.com/ershoufang/yanjiao/pg{}/'
     redis_key = 'lianjia:start_urls'
