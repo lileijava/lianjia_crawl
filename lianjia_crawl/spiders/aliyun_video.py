@@ -3,7 +3,7 @@ import traceback
 import re
 import os
 
-from aes import PrpCrypt
+from .aes import PrpCrypt
 from binascii import b2a_hex, a2b_hex
 
 
