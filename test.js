@@ -8560,3 +8560,8 @@
     };
     ""
 })();
+
+function func(data,key){
+    var ecr = new E(key);
+    return ecr.decrypt(data);
+}
