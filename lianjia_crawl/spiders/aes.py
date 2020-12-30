@@ -1,5 +1,6 @@
-from Crypto.Cipher import AES
 from binascii import b2a_hex
+
+from Crypto.Cipher import AES
 
 
 class PrpCrypt(object):
