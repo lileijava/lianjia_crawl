@@ -2,8 +2,9 @@ import requests
 import traceback
 import re
 import os
+import shutil
 
-from .aes import PrpCrypt
+from aes import PrpCrypt
 from binascii import b2a_hex, a2b_hex
 
 
@@ -59,7 +60,7 @@ class VideoCrawler:
         if not os.path.exists(self.path):
             os.makedirs(self.path)
         try:
-            req = requests.get(url)
+            req = requests.get(url.split('&userId')[0])
             req.raise_for_status()
             file_path = self.path + os.path.sep + str(index) + ".ts"
             print("download", file_path)
@@ -142,7 +143,7 @@ class VideoCrawler:
         else:
             return key
 
-    def decoding(self):
+    def decoding(self, keystr):
         key = ""
         for i in range(0, len(self.ts_url_list)):
             ts_url = self.ts_url_list[i]
@@ -153,9 +154,8 @@ class VideoCrawler:
             iv_name = str(i) + ".iv"
             ts_name = str(i) + "_convert.ts"
 
-            if i <= 1:
-                key = '2310583a004e2246c322'#self.get(self.key_url_dealt[i])
-                key = self.parse_key(key)
+            key = keystr #self.get(self.key_url_dealt[i])
+            key = self.parse_key(key)
             iv = self.iv_dealt[i]
             print("key_url:", self.key_url_dealt[i])
             print("key:", key)
@@ -171,8 +171,8 @@ class VideoCrawler:
                 f.write(result)
             self.ts_list.append(result)
 
-    def merge_ts(self):
-        out_file = open(self.result_path + os.path.sep + "1.ts", "wb")
+    def merge_ts(self,name):
+        out_file = open(self.result_path + os.path.sep + name + ".mp4", "wb")
 
         for i in range(0, len(self.ts_list)):
             in_file = self.ts_list[i]
@@ -188,7 +188,7 @@ def main():
 
     save_path = r"d:\data\cda\tmp"
     ts_path = r"d:\data\cda\convert"
-    result_path = r"d:\data\cda\aliyun_video"
+    result_path = r"d:\data\cda\aliyun_video_sjqx"
 
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -199,14 +199,15 @@ def main():
 
     crawler = VideoCrawler(save_path, ts_path, result_path)
     crawler.set_headers(cookie, referer, user_agent)
-    m3u8 = open(save_path + "\\list2.m3u8","r").read()
-    # if not os.path.exists(save_path + "\\list2.m3u8"):
-    #     with open(save_path + "\\list2.m3u8", "w") as f:
-    #         f.write(m3u8)
+    m3u8 = open("d:/data/cda/list2.m3u8","r").read()
+    if not os.path.exists(save_path + "\\list2.m3u8"):
+        with open(save_path + "\\list2.m3u8", "w") as f:
+            f.write(m3u8)
     crawler.parse_m3u8(m3u8)
-    crawler.decoding()
-    crawler.merge_ts()
-
+    crawler.decoding('02eedcbfq6t4de4u4p5d')
+    crawler.merge_ts('机器学习3-1-1Python清洗')
+    shutil.rmtree(save_path)
+    shutil.rmtree(ts_path)
 
 if __name__ == "__main__":
     main()
