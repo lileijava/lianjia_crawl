@@ -81,88 +81,104 @@ if __name__ == '__main__':
     #     else:
     #         flag = True
     # ---------------------------------------------------------------------------------------------
-    # for findex in range(0,78):
-    #     f = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/{}.ts'.format(str(findex)), 'rb')
-    #     data = list(f.read())
-    #     index_video = []
-    #     index_voice = []
-    #     video = []
-    #     voice = []
-    #     for i in range(0, len(data), 188):
-    #         ts1 = data[i:i + 188]
-    #         PID = (ts1[1] & 0x1f) << 8 | ts1[2]
-    #         if PID == 256:
-    #             bit = getBit(ts1[1])
-    #
-    #             trycount = 1
-    #             bit_next = ''
-    #             ts2 = data[i + 188 * trycount: i + 188 * (trycount + 1)]
-    #             while len(ts2) > 0:
-    #                 trycount += 1
-    #                 if ((ts2[1] & 0x1f) << 8 | ts2[2]) == 256:
-    #                     bit_next = getBit(ts2[1])
-    #                     break
-    #                 ts2 = data[i + 188 * trycount:i + 188 * (trycount + 1)]
-    #             if bit == '1' and bit_next == '0':
-    #                 begin = getStartIndex(ts1)
-    #                 video += list(ts1[begin + 19:])
-    #                 ids = [0, 0]
-    #                 ids[0] = i + begin + 19
-    #                 ids[1] = len(ts1[begin + 19:])
-    #                 index_video.append(ids)
-    #             elif bit == '0' and (bit_next == '1' or bit_next == ''):
-    #                 deResult = list(decrypt(bytes(video), base64.b64decode('ZOmY0Fhc6u9zjwi9ky4PpA==')))
-    #                 idx = 0
-    #                 for ids in index_video:
-    #                     start = ids[0]
-    #                     end = ids[0] + ids[1]
-    #                     for i in range(start, end):
-    #                         data[i] = deResult[idx]
-    #                         idx += 1
-    #             else:
-    #                 video += ts1[4:]
-    #                 ids = [0, 0]
-    #                 ids[0] = i + 4
-    #                 ids[1] = 184
-    #                 index_video.append(ids)
-    #         elif PID == 257:
-    #             bit = getBit(ts1[1])
-    #
-    #             trycount = 1
-    #             bit_next = ''
-    #             ts2 = data[i + 188 * trycount:i + 188 * (trycount + 1)]
-    #             while len(ts2) > 0:
-    #                 if ((ts2[1] & 0x1f) << 8 | ts2[2]) == 257:
-    #                     bit_next = getBit(ts2[1])
-    #                     break
-    #                 trycount += 1
-    #                 ts2 = data[i + 188 * trycount:i + 188 * (trycount + 1)]
-    #             if bit == '1' and bit_next == '0':
-    #                 begin = getStartIndex(ts1)
-    #                 voice += list(ts1[begin + 19:])
-    #                 ids = [0, 0]
-    #                 ids[0] = i + begin + 19
-    #                 ids[1] = len(ts1[begin + 19:])
-    #                 index_voice.append(ids)
-    #             elif bit == '0' and (bit_next == '1' or bit_next == ''):
-    #                 deResult = list(decrypt(bytes(voice), base64.b64decode('ZOmY0Fhc6u9zjwi9ky4PpA==')))
-    #                 idx = 0
-    #                 for ids in index_voice:
-    #                     start = ids[0]
-    #                     end = ids[0] + ids[1]
-    #                     for i in range(start, end):
-    #                         data[i] = deResult[idx]
-    #                         idx += 1
-    #             else:
-    #                 voice += ts1[4:]
-    #                 ids = [0, 0]
-    #                 ids[0] = i + 4
-    #                 ids[1] = 184
-    #                 index_voice.append(ids)
-    #
-    #     with open('d:/video/{}.ts'.format(str(findex)), 'wb') as fr:
-    #         fr.write(bytes(data))
+    for findex in range(0,1):
+        print('开始解密第{}个视频'.format(str(findex)))
+        f = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/{}.ts'.format(str(findex)), 'rb')
+        data = list(f.read())
+        index_video = []
+        index_voice = []
+        video = []
+        voice = []
+        for i in range(0, len(data), 188):
+            ts1 = data[i:i + 188]
+            PID = (ts1[1] & 0x1f) << 8 | ts1[2]
+            if PID == 256:
+                bit = getBit(ts1[1])
 
+                trycount = 1
+                bit_next = ''
+                ts2 = data[i + 188 * trycount: i + 188 * (trycount + 1)]
+                while len(ts2) > 0:
+                    trycount += 1
+                    if ((ts2[1] & 0x1f) << 8 | ts2[2]) == 256:
+                        bit_next = getBit(ts2[1])
+                        break
+                    else:
+                        bit_next = ''
+                    ts2 = data[i + 188 * trycount:i + 188 * (trycount + 1)]
+                if bit == '1' and bit_next == '0':
+                    begin = getStartIndex(ts1)
+                    video += list(ts1[begin + 19:])
+                    ids = [0, 0]
+                    ids[0] = i + begin + 19
+                    ids[1] = len(ts1[begin + 19:])
+                    index_video.append(ids)
+                elif bit == '0' and (bit_next == '1' or bit_next == ''):
+                    video += ts1[4:]
+                    ids = [0, 0]
+                    ids[0] = i + 4
+                    ids[1] = 184
+                    index_video.append(ids)
+                    deResult = list(decrypt(bytes(video), base64.b64decode('D0YyvTV5RnU3hLl9O6tFqw==')))
+                    idx = 0
+                    for ids in index_video:
+                        start = ids[0]
+                        end = ids[0] + ids[1]
+                        for i in range(start, end):
+                            data[i] = deResult[idx]
+                            idx += 1
+                    index_video = []
+                else:
+                    video += ts1[4:]
+                    ids = [0, 0]
+                    ids[0] = i + 4
+                    ids[1] = 184
+                    index_video.append(ids)
+            elif PID == 257:
+                bit = getBit(ts1[1])
+
+                trycount = 1
+                bit_next = ''
+                ts2 = data[i + 188 * trycount:i + 188 * (trycount + 1)]
+                while len(ts2) > 0:
+                    if ((ts2[1] & 0x1f) << 8 | ts2[2]) == 257:
+                        bit_next = getBit(ts2[1])
+                        break
+                    else:
+                        bit_next = ''
+                    trycount += 1
+                    ts2 = data[i + 188 * trycount:i + 188 * (trycount + 1)]
+                if bit == '1' and bit_next == '0':
+                    begin = getStartIndex(ts1)
+                    voice += list(ts1[begin + 19:])
+                    ids = [0, 0]
+                    ids[0] = i + begin + 19
+                    ids[1] = len(ts1[begin + 19:])
+                    index_voice.append(ids)
+                elif bit == '0' and (bit_next == '1' or bit_next == ''):
+                    voice += ts1[4:]
+                    ids = [0, 0]
+                    ids[0] = i + 4
+                    ids[1] = 184
+                    index_video.append(ids)
+                    deResult = list(decrypt(bytes(voice), base64.b64decode('D0YyvTV5RnU3hLl9O6tFqw==')))
+                    idx = 0
+                    for ids in index_voice:
+                        start = ids[0]
+                        end = ids[0] + ids[1]
+                        for i in range(start, end):
+                            data[i] = deResult[idx]
+                            idx += 1
+                    index_voice = []
+                else:
+                    voice += ts1[4:]
+                    ids = [0, 0]
+                    ids[0] = i + 4
+                    ids[1] = 184
+                    index_voice.append(ids)
+
+        with open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/video/{}.ts'.format(str(findex)), 'wb') as fr:
+            fr.write(bytes(data))
     #-----------------------------------------------------------------------------------------------
     # file = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/2.ts', 'rb')
     # offset = 0
@@ -216,9 +232,9 @@ if __name__ == '__main__':
     file.close()
     '''
 
-    w = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/decrypted/video.mp4', 'wb')
-    for i in range(0,78):
-        f = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/decrypted/{}.ts'.format(str(i)),'rb')
-        w.write(f.read())
-        f.close()
-    w.close()
+    # w = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/video/video.mp4', 'wb')
+    # for i in range(0,12):
+    #     f = open('D:/vvtoolbox-gui-series-0.4.3-win-64bit/tsvideo/video/{}.ts'.format(str(i)),'rb')
+    #     w.write(f.read())
+    #     f.close()
+    # w.close()
